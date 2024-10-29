@@ -1,6 +1,16 @@
 #include <stdio.h>
 
 /**
+ * swap two number
+ */
+void swap(int *a, int *b)
+{
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+/**
  * Quick sort by C Lang.
  *
  * params:
@@ -9,41 +19,44 @@
  *   right -- the last index of arr
  *
  */
-void quickSort(int arr[], int left, int right)
+int partition(int arr[], int left, int right)
 {
-    // the arr is empty or left one element
-    if (left >= right)
-    {
-        return;
-    }
-
     // init data
-    int pivot = arr[left];
+    int pivotIndex = left;
     int i = left, j = right;
 
     while (i < j)
     {
         // right -> left: find the first element less than pivot
-        // notice: when arr[j] meet the condition `arr[j] < pivot`, it will break the while loop, indicate that current element is less than pivot.
-        while (i < j && arr[j] > pivot)
-            j--;
-        if (i < j)
+        while (i < j && arr[j] > arr[pivotIndex])
         {
-            arr[i++] = arr[j];
+            j--;
         }
 
         // left -> right: find the first element great than pivot
-        while (i < j && arr[i] < pivot)
-            i++;
-        if (i < j)
+        while (i < j && arr[i] < arr[pivotIndex])
         {
-            arr[j--] = arr[i];
+            i++;
         }
 
-        arr[i] = pivot; // The element has benn correctly placed in its corresponding position
+        // after upper two loop, indicate that it is able to swap
+        if (i < j)
+            swap(&arr[i], &arr[j]);
+    }
 
-        quickSort(arr, left, i - 1);  // Recursive invoke in the left sub array
-        quickSort(arr, i + 1, right); // Recursive invoke in the right sub array
+    // Swap the pivot with the element pointed by the right pointer
+    swap(&arr[pivotIndex], &arr[j]);
+
+    return j;
+}
+
+void quickSort(int arr[], int left, int right)
+{
+    if (left < right)
+    {
+        int pivotIndex = partition(arr, left, right);
+        quickSort(arr, left, pivotIndex - 1);
+        quickSort(arr, pivotIndex + 1, right);
     }
 }
 
